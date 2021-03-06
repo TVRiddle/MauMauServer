@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SpielNeustarten</title>
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/modernizr-2.6.2.min.js"></script>
+</head>
+<body onload="gehtsWeiter()">
+<nav th:replace="fragments/nav ::site-nav"></nav>
+<header th:replace="fragments/header :: restart-header"></header>
+
+<div class="container">
+  <form action="/restart" method="post">
+    <div id="spielId" th:text="${spielId}" hidden></div>
+    <input name="spielId" th:value="${spielId}" hidden/>
+    <input type="submit" class="btn btn-danger m-5" value="Neu starten"/>
+  </form>
+  <h2>Diese Karten hatten deine Mitspieler</h2>
+  <div class="row">
+    <div style="display: inline-block; margin-left: 10px;" th:each="player :${spiel.getPlayers()}">
+      <h4 th:text="${player.getName()}"></h4>
+      <div th:each="karte :${player.getKarten()}">
+        <div th:text="${karte.ausschrift}"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Hier nochmal der Spielverlauf</h2>
+  <div class="row">
+    <ol>
+      <div th:each="logmsg :${log}">
+        <li th:text="${logmsg.getMsg( )}"></li>
+      </div>
+    </ol>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+  function gehtsWeiter() {
+    let spielId = document.getElementById("spielId");
+    fetch("/wait/" + spielId.textContent)
+    .then(data => {
+      return data.json();
+    })
+    .then(res => {
+      if (res.isRunning) {
+        weiterleiten(spielId)
+      }
+    })
+    setTimeout(gehtsWeiter, 2000);
+  }
+
+  function weiterleiten(spielId) {
+    window.location.replace("/spiel/" + spielId.textContent);
+  }
+
+</script>
+</body>
+</html>

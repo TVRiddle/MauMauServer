@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spiel</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script th:src="@{/js/modernizr-2.6.2.min.js}"></script>
+</head>
+<body>
+<nav th:replace="fragments/nav ::site-nav"></nav>
+
+<div class="container">
+  <div><p>Dies ist Spiel <span th:text="${spiel.id}"></span></p></div>
+  <div><p>Aktueller Spieler ist: <span th:text="${spiel.aktuellerPlayer.name}"></span></p></div>
+  <div style="display: inline-block">
+    <p>Die aktuelle Karte ist:
+      <span th:text="${spiel.gueltigeKarte.ausschrift}" style="display: block"></span>
+      <img th:src="@{/img/{img_name}.PNG(img_name=${spiel.getGueltigeKarte().ausschrift})}"
+           th:alt="${spiel.getGueltigeKarte().ausschrift}" height="100" width="140">
+    </p>
+  </div>
+  <form action="/spiel" method="post">
+    <input name="spielID" th:value="${spiel.id}" hidden/>
+    <label for="karte">Deine Handkarten sind:</label>
+    <div id="auswahl">
+      <div style="display: inline-block" th:each="karte : ${spiel.aktuellerPlayer.karten}">
+        <img type="image" style="display: block"
+             th:alt="${karte.ausschrift}"
+             th:src="@{/img/{img_name}.PNG(img_name=${karte.ausschrift})}"
+             height="100" width="120">
+        <input type="radio" th:value="${karte.id}" name="karte"><span
+          th:text="${karte.ausschrift}"></span>
+      </div>
+      <div style="display: inline-block">
+        <img alt="karte ziehen" style="display: block" th:src="@{/img/back.jfif}"
+             height="100" width="140">
+        <input type="radio" th:value="-1" name="karte"><span>Karte ziehen</span>
+      </div>
+    </div>
+
+    <input type="checkbox" name="mau" data-toggle="toggle" data-onstyle="primary">
+    <span>Mau sagen</span>
+    <div>
+      <input type="submit" value="Karte spielen" class="btn btn-primary">
+    </div>
+  </form>
+</div>
+<div class="container">
+  <div class="row text-center">
+    <h2 class="text-primary m-4" th:text="${command.toString()}"></h2>
+    <ol>
+      <div th:each="logmsg :${log}">
+        <li th:text="${logmsg}"></li>
+      </div>
+    </ol>
+  </div>
+  <div id="schummel" class="row" hidden>
+    <div style="display: inline-block; margin-left: 10px;" th:each="player :${spiel.getPlayers()}">
+      <h4 th:text="${player.getName()}"></h4>
+      <div th:each="karte :${player.getKarten()}">
+        <div th:text="${karte.ausschrift}"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  window.addEventListener('keypress', function (event) {
+    event.preventDefault();
+
+    if (event.code == "Space") {
+      let allCards = document.getElementById("schummel");
+      if (allCards.hasAttribute("hidden")) {
+        allCards.removeAttribute("hidden");
+      } else {
+        allCards.setAttribute("hidden", "true");
+      }
+    }
+  })
+</script>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"-->
+<!--        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"-->
+<!--        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"-->
+<!--        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"-->
+<!--        crossorigin="anonymous"></script>-->
+
+</body>
+</html>

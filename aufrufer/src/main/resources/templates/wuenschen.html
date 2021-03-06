@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wünschdirwas</title>
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/modernizr-2.6.2.min.js"></script>
+</head>
+<body>
+<nav th:replace="fragments/nav ::site-nav"></nav>
+
+<div class="container">
+  <div>
+    <p>Dies ist Spiel <span th:text="${spiel.id}"></span>
+    </p>
+  </div>
+  <div>
+    <p>Aktueller Spieler ist: <span th:text="${spiel.aktuellerPlayer.name}"></span>
+    </p>
+  </div>
+  <div>
+    <div style="display: inline-block">
+      <p>Die aktuelle Karte ist:
+        <span th:text="${spiel.gueltigeKarte.ausschrift}" style="display: block"></span>
+        <img th:src="@{/img/{img_name}.PNG(img_name=${spiel.getGueltigeKarte().ausschrift})}"
+             th:alt="${spiel.getGueltigeKarte().ausschrift}" height="100" width="140">
+      </p>
+    </div>
+  </div>
+  <label for="karte">Deine Handkarten sind:</label>
+  <div id="auswahl">
+    <div style="display: inline-block" th:each="karte : ${spiel.aktuellerPlayer.karten}">
+      <img type="image" style="display: block"
+           th:alt="${karte.ausschrift}"
+           th:src="@{/img/{img_name}.PNG(img_name=${karte.ausschrift})}"
+           height="100" width="120">
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <form action="/wunsch" method="post">
+    <input name="spielID" th:value="${farbenDto.spielId}" hidden/>
+    <label for="wunsch">Wähle eine Farbe</label>
+    <select class="form-control" name="kartenValue" id="wunsch" size="1">
+      <div th:each="farbe : ${farbenDto.kartenFarben}">
+        <option th:text="${farbe}"></option>
+      </div>
+    </select>
+    <input type="submit" class="btn btn-primary">
+  </form>
+
+</div>
+</body>
+</html>

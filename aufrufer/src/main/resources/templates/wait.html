@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MauMauKBA</title>
+
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/modernizr-2.6.2.min.js"></script>
+</head>
+<body onload="binIchDran()">
+<nav th:replace="fragments/nav ::site-nav"></nav>
+<header th:replace="fragments/header :: site-header"></header>
+
+<div class="container">
+  <div><p>Dies ist Spiel <span id="spielId" th:text="${spiel.id}"></span></p></div>
+  <div><p>Aktueller Spieler ist: <span th:text="${spiel.aktuellerPlayer.name}"></span></p></div>
+  <div style="display: inline-block">
+    <p>Die aktuelle Karte ist:
+      <span th:text="${spiel.gueltigeKarte.ausschrift}" style="display: block"></span>
+      <img th:src="@{/img/{img_name}.PNG(img_name=${spiel.getGueltigeKarte().ausschrift})}"
+           th:alt="${spiel.getGueltigeKarte().ausschrift}" height="100" width="140">
+    </p>
+  </div>
+  <div>
+    <label for="karte">Deine Handkarten sind:</label>
+    <div id="auswahl">
+      <div style="display: inline-block" th:each="karte : ${handkarten}">
+        <img type="image" style="display: block"
+             th:alt="${karte.ausschrift}"
+             th:src="@{/img/{img_name}.PNG(img_name=${karte.ausschrift})}"
+             height="100" width="120">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row text-center">
+    <h2 class="text-primary m-4" id="command" th:text="${command.toString()}"></h2>
+    <ol id="log">
+      <div th:each="logmsg :${log}">
+        <li th:text="${logmsg}"></li>
+      </div>
+    </ol>
+  </div>
+  <div id="schummel" class="row" hidden>
+    <div style="display: inline-block; margin-left: 10px;" th:each="player :${spiel.getPlayers()}">
+      <h4 th:text="${player.getName()}"></h4>
+      <div th:each="karte :${player.getKarten()}">
+        <div th:text="${karte.ausschrift}"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  window.addEventListener('keypress', function (event) {
+    event.preventDefault();
+
+    if (event.code == "Space") {
+      let allCards = document.getElementById("schummel");
+      if (allCards.hasAttribute("hidden")) {
+        allCards.removeAttribute("hidden");
+      } else {
+        allCards.setAttribute("hidden", "true");
+      }
+    }
+  })
+</script>
+
+<script type="text/javascript">
+
+  function binIchDran() {
+    let spielId = document.getElementById("spielId");
+    fetch("/wait/" + spielId.textContent)
+    .then(data => {
+      return data.json();
+    })
+    .then(res => {
+      console.log(res)
+      if (!res.isRunning) {
+        ende(spielId)
+      } else {
+        let playerCookieId = getCookie("PlayerCookieId");
+        if (res.aktuellerPlayer == playerCookieId) {
+          weiterleiten(spielId);
+        } else {
+          update(res);
+        }
+      }
+    })
+    setTimeout(binIchDran, 2000);
+  }
+
+  function ende(spielId) {
+    window.location.replace("/restart/" + spielId.textContent);
+  }
+
+  function weiterleiten(spielId) {
+    window.location.replace("/spiel/" + spielId.textContent);
+  }
+
+  function update(res) {
+    document.getElementById("command").innerText = res.command;
+    updateLog(res.log);
+  }
+
+  function updateLog(log) {
+    let logElement = document.getElementById("log");
+    if (logElement.hasChildNodes()) {
+      logElement.innerHTML = "";
+    }
+
+    log.forEach(function (entry) {
+      let element = document.createElement('li');
+      element.textContent = entry;
+      logElement.append(element);
+    })
+
+  }
+
+  function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+</script>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

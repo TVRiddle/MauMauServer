@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MauMauKBA</title>
+
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/modernizr-2.6.2.min.js"></script>
+</head>
+<body>
+<nav th:replace="fragments/nav ::site-nav"></nav>
+<header th:replace="fragments/header :: site-header"></header>
+
+<div class="container">
+  <h2>Wer spielt mit?</h2>
+  <form action="/newGame" method="post">
+    <div class="form-group">
+      <div>
+        <label>Wie möchtest du genannt werden?</label>
+        <input type="text" name="spielerName" value="Player 1" id="spielerName">
+      </div>
+      <div>
+        <div style="display: inline-block">
+          <lable for="anzahlSpieler">Anzahl der Spieler</lable>
+          <select class="form-control" name="anzahlSpieler" id="anzahlSpieler" size="1">
+            <option>1</option>
+            <option selected>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
+        <div style="display: inline-block">
+          <lable for="anzahlComputer">Anzahl einfache Computer</lable>
+          <select class="form-control" name="computerEinfach" id="computerEinfach" size="1">
+            <option>0</option>
+            <option selected>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+          </select>
+        </div>
+        <div style="display: inline-block">
+          <lable for="anzahlComputer">Anzahl mittlere Computer</lable>
+          <select class="form-control" name="computerMittel" id="computerMittel" size="1">
+            <option>0</option>
+            <option selected>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+          </select>
+        </div>
+        <div style="display: inline-block">
+          <lable for="anzahlComputer">Anzahl schwere Computer</lable>
+          <select class="form-control" name="computerSchwer" id="computerSchwer" size="1">
+            <option selected>0</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+          </select>
+        </div>
+
+      </div>
+
+      <lable for="regeln">Bitte wählen Sie die Regeln nach denen Sie spielen möchten</lable>
+      <div>
+        <input type="checkbox" name="achtAussetzen" data-toggle="toggle" data-onstyle="primary"
+               checked>
+        <span>Bei 8 Ausetzen</span>
+      </div>
+      <div>
+        <input type="checkbox" name="assNochmal" data-toggle="toggle" data-onstyle="primary">
+        <span>Bei Ass nochmal</span>
+      </div>
+      <div>
+        <input type="checkbox" name="mauRegel" data-toggle="toggle" data-onstyle="primary" checked>
+        <span>Mau sagen Regel anwenden</span>
+      </div>
+      <div>
+        <input type="checkbox" name="bubeBube" data-toggle="toggle" data-onstyle="primary">
+        <span>Bube auf Bube stinkt</span>
+      </div>
+      <small id="regelInfo" class="form-text text-muted">Jede Kombination ist wählbar und auch in
+        gleichen Settings wieder neu startbar</small>
+    </div>
+    <div class="form-group">
+      <input type="submit" value="Neues Spiel starten"/>
+    </div>
+  </form>
+  <div>
+    <h2 th:text="${instructions}"></h2>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<!--<script src="./js/jquery.min.js"></script>-->
+<!--<script src="./js/bootstrap.min.js"></script>-->
+<!--<script src="./js/main.js"></script>-->
+
+</body>
+</html>
